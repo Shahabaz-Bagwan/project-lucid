@@ -1,0 +1,41 @@
+name: Entry
+component: gui
+header: nativeui/entry.h
+type: refcounted
+namespace: nu
+inherit: View
+description: Single-line text input view.
+
+constructors:
+  - signature: Entry(Entry::Type type)
+    lang: ['cpp']
+    description: Create a new `Entry` with `type`.
+    detail: By default `type` is `Normal`.
+
+class_methods:
+  - signature: Entry* Create()
+    lang: ['lua', 'js']
+    description: Create a normal `Entry`.
+
+  - signature: Entry* CreateType(Entry::Type type)
+    lang: ['lua', 'js']
+    description: Create an `Entry` with `type`.
+
+class_properties:
+  - property: const char* kClassName
+    lang: ['cpp']
+    description: The class name of this view.
+
+methods:
+  - signature: void SetText(const std::string& text)
+    description: Change the text in the view.
+
+  - signature: std::string GetText() const
+    description: Return currently displayed text.
+
+events:
+  - signature: void on_text_change(Entry* self)
+    description: Emitted when user has changed text.
+
+  - signature: void on_activate(Entry* self)
+    description: Emitted when user has pressed <kbd>Enter</kbd> in the view.

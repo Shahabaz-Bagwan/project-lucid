@@ -1,0 +1,10 @@
+name: Scroll::Policy
+header: nativeui/scroll.h
+type: enum class
+namespace: nu
+description: Scrollbar policy.
+
+enums:
+  - name: Always
+  - name: Never
+  - name: Automatic

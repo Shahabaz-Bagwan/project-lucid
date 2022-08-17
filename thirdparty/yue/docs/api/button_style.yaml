@@ -1,0 +1,22 @@
+name: Button::Style
+header: nativeui/button.h
+type: enum class
+namespace: nu
+description: Represent visual types of `Button`.
+
+enums:
+  - name: Rounded
+  - name: RegularSquare
+  - name: ThickSquare
+  - name: ThickerSquare
+  - name: Disclosure
+  - name: ShadowlessSquare
+  - name: Circular
+  - name: TexturedSquare
+  - name: HelpButton
+  - name: SmallSquare
+  - name: TexturedRounded
+  - name: RoundRect
+  - name: Recessed
+  - name: RoundedDisclosure
+  - name: Inline

@@ -1,0 +1,12 @@
+name: Clipboard::Data::Type
+header: nativeui/clipboard.h
+type: enum class
+namespace: nu
+description: Type of clipboard data.
+
+enums:
+  - name: Text
+  - name: HTML
+  - name: Image
+  - name: FilePaths
+  - name: None

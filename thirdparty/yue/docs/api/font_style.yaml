@@ -1,0 +1,9 @@
+name: Font::Style
+header: nativeui/gfx/font.h
+type: enum class
+namespace: nu
+description: Represent font styles.
+
+enums:
+  - name: Normal
+  - name: Italic

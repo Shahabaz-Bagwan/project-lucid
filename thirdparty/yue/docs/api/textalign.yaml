@@ -1,0 +1,10 @@
+name: TextAlign
+header: nativeui/gfx/text.h
+type: enum class
+namespace: nu
+description: Text alignment.
+
+enums:
+  - name: Start
+  - name: Center
+  - name: End

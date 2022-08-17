@@ -1,0 +1,52 @@
+name: Font
+component: gui
+header: nativeui/gfx/font.h
+type: refcounted
+namespace: nu
+description: Native font.
+
+constructors:
+  - signature: Font(const std::string& name, float size, Font::Weight weight, Font::Style style)
+    lang: ['cpp']
+    description: &ref1 |
+      Create a Font implementation with the specified `name`, DIP `size`,
+      `weight` and `style`.
+
+  - signature: Font(const base::FilePath& path, float size)
+    lang: ['cpp']
+    description: &ref2 |
+      Create a Font by reading from |path|. If the font file contains multiple
+      families or weights, only the first encountered font will be used.
+
+class_methods:
+  - signature: Font* Default()
+    description: Return the default font used for displaying text.
+
+  - signature: Font* Create(const std::string& name, float size, Font::Weight weight, Font::Style style)
+    lang: ['lua', 'js']
+    description: *ref1
+
+  - signature: Font* CreateFromPath(const base::FilePath& path, float size)
+    lang: ['lua', 'js']
+    description: *ref2
+
+methods:
+  - signature: Font* Derive(float size_delta, Font::Weight weight, Font::Style style) const
+    description: Returns a new Font derived from the existing font.
+    detail: The `size_delta` is the size in DIP to add to the current font.
+
+  - signature: std::string GetName() const
+    description: Return font's family name.
+
+  - signature: float GetSize() const
+    description: Return font's DIP size.
+
+  - signature: Font::Weight GetWeight() const
+    description: Return the font weight.
+
+  - signature: Font::Style GetStyle() const
+    description: Return the font style.
+
+  - signature: NativeFont GetNative() const
+    lang: ['cpp']
+    description: Return the native instance wrapped by the class.

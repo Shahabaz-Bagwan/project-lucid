@@ -1,0 +1,15 @@
+name: Color::Name
+header: nativeui/color.h
+type: enum class
+namespace: nu
+description: Theme names of colors.
+
+enums:
+  - name: Text
+    description: Normal text color.
+  - name: DisabledText
+    description: Text Color for disabled views.
+  - name: Control
+    description: The color to use for the flat surfaces of a control.
+  - name: WindowBackground
+    description: Window background color.

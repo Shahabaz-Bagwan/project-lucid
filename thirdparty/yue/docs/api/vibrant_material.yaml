@@ -1,0 +1,12 @@
+name: Vibrant::Material
+platform: ['macOS']
+header: nativeui/vibrant.h
+type: enum class
+namespace: nu
+description: The material of a `Vibrant` view.
+
+enums:
+  - name: AppearanceBased
+  - name: Light
+  - name: Dark
+  - name: Titlebar

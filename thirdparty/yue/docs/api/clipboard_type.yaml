@@ -1,0 +1,16 @@
+name: Clipboard::Type
+header: nativeui/clipboard.h
+type: enum class
+namespace: nu
+description: Type of `Clipboard`.
+
+enums:
+  - name: CopyPaste
+  - name: Drag
+    description: Only available on macOS.
+  - name: Find
+    description: Only available on macOS.
+  - name: Font
+    description: Only available on macOS.
+  - name: Selection
+    description: Only available on Linux.
