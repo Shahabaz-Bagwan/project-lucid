@@ -1,0 +1,13 @@
+[Bb]uild/
+[Bb]in/
+[Ll]ib/
+.vscode/
+input/
+.cache/
+ipch/
+*.aps
+*.opendb
+*.opensdf
+*.cachefile
+*.ncb
+*.sdf
