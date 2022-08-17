@@ -1,0 +1,244 @@
+name: Window
+component: gui
+header: nativeui/window.h
+type: refcounted
+namespace: nu
+inherit: Responder
+description: Native window.
+
+constructors:
+  - signature: Window(const Window::Options& options)
+    lang: ['cpp']
+    description: Create a new window with `options`.
+
+class_methods:
+  - signature: Window* Create(Window::Options options)
+    lang: ['lua', 'js']
+    description: Create a new window with `options`.
+
+class_properties:
+  - property: const char* kClassName
+    lang: ['cpp']
+    description: The class name of window.
+
+methods:
+  - signature: void Close()
+    description: Request to close the window.
+
+  - signature: bool HasFrame() const
+    description: Return whether window has a native frame.
+
+  - signature: bool IsTransparent() const
+    description: Return whether window is transparent.
+
+  - signature: void SetHasShadow(bool has)
+    description: |
+      Set whether window should have shadow.
+
+      Depending on platform, this may not work.
+
+  - signature: bool HasShadow() const
+    description: Return whether window has shadow.
+
+  - signature: void SetContentView(scoped_refptr<View> view)
+    description: |
+      Set the content view of the window.
+
+      The content view will always be resized to fill window's client area.
+
+  - signature: View* GetContentView() const
+    description: Return the content view of the window.
+
+  - signature: void Center()
+    description: Move the window to the center of the screen.
+
+  - signature: void SetContentSize(const SizeF& size)
+    description: Resize window to make the content view fit `size`.
+
+  - signature: SizeF GetContentSize() const
+    description: Return the size of content view.
+
+  - signature: void SetBounds(const RectF& bounds)
+    description: Change the position and size of the window.
+
+  - signature: RectF GetBounds() const
+    description: Return the position and size of the window.
+
+  - signature: void SetSizeConstraints(const SizeF& minsize, const SizeF& maxsize)
+    description: |
+      Set the minimum and maximum sizes of the window.
+
+      Passing an empty size means no constraint.
+    parameters:
+      minsize:
+        description: Minimum size.
+      maxsize:
+        description: Maximum size.
+
+  - signature: std::tuple<SizeF, SizeF> GetSizeConstraints() const
+    description: Return minimum and maximum sizes of the window.
+
+  - signature: void SetContentSizeConstraints(const SizeF& minsize, const SizeF& maxsize)
+    description: |
+      Set the minimum and maximum content sizes of the window.
+
+      Passing an empty size means no constraint.
+    parameters:
+      minsize:
+        description: Minimum content size.
+      maxsize:
+        description: Maximum content size.
+
+  - signature: std::tuple<SizeF, SizeF> GetContentSizeConstraints() const
+    description: Return minimum and maximum content sizes of the window.
+
+  - signature: void Activate()
+    description: Show the window and activate it.
+
+  - signature: void Deactivate()
+    description: Move the focus away from the window.
+
+  - signature: bool IsActive() const
+    description: Return whether window has focus.
+
+  - signature: void SetVisible(bool visible)
+    description: Show/hide the window.
+
+  - signature: bool IsVisible() const
+    description: Return whether window is visible.
+
+  - signature: void SetAlwaysOnTop(bool top)
+    description: Make the window always show above other normal windows.
+
+  - signature: bool IsAlwaysOnTop() const
+    description: Return whether window is always above other normal windows.
+
+  - signature: void SetFullscreen(bool fullscreen)
+    description: Enter/leave fullscreen state.
+
+  - signature: bool IsFullscreen() const
+    description: Return whether window is in fullscreen.
+
+  - signature: void Maximize()
+    description: Maximize the window.
+
+  - signature: void Unmaximize()
+    description: Unmaximize the window.
+
+  - signature: bool IsMaximized() const
+    description: Return whether window is maximized.
+
+  - signature: void Minimize()
+    description: Minimize the window.
+
+  - signature: void Restore()
+    description: Restore the minimized window.
+
+  - signature: bool IsMinimized() const
+    description: Return whether window is minimized.
+
+  - signature: void SetResizable(bool resizable)
+    description: Set whether window can be resized.
+
+  - signature: bool IsResizable() const
+    description: Return whether window can be resized.
+
+  - signature: void SetMaximizable(bool maximizable)
+    description: Set whether window can be maximize.
+
+  - signature: bool IsMaximizable() const
+    description: Return whether window can be maximize.
+
+  - signature: void SetMinimizable(bool minimizable)
+    description: Set whether window can be minimized.
+
+  - signature: bool IsMinimizable() const
+    description: Return whether window can be minimized.
+
+  - signature: void SetMovable(bool movable)
+    description: Set whether window can be moved.
+
+  - signature: bool IsMovable() const
+    description: Return whether window can be moved.
+
+  - signature: void SetTitle(const std::string& title)
+    description: Set window title.
+
+  - signature: std::string GetTitle() const
+    description: Get window title.
+
+  - signature: void SetBackgroundColor(Color color)
+    description: Set the background color of the window.
+
+  - signature: void SetToolbar(scoped_refptr<Toolbar> toolbar)
+    platform: ['macOS']
+    description: Set the window toolbar.
+
+  - signature: Toolbar* GetToolbar() const
+    platform: ['macOS']
+    description: Return the window toolbar.
+
+  - signature: void SetTitleVisible(bool visible)
+    platform: ['macOS']
+    description: |
+      Set whether the title is visible, when title was hidden the toolber would
+      be moved into the area previously occupied by the title.
+
+  - signature: bool IsTitleVisible() const;
+    platform: ['macOS']
+    description: Return whether title is visible.
+
+  - signature: void SetFullSizeContentView(bool full)
+    platform: ['macOS']
+    description: |
+      Set the `NSFullSizeContentViewWindowMask` style on the window.
+
+  - signature: bool IsFullSizeContentView() const
+    platform: ['macOS']
+    description: |
+      Return whether the window has `NSFullSizeContentViewWindowMask` style.
+
+  - signature: void SetSkipTaskbar(bool skip)
+    platform: ['Windows', 'Linux']
+    description: Set whether to hide the window from taskbar.
+
+  - signature: void SetIcon(scoped_refptr<Image> icon)
+    platform: ['Windows', 'Linux']
+    description: Set the window icon.
+
+  - signature: void SetMenuBar(scoped_refptr<MenuBar> menubar)
+    platform: ['Windows', 'Linux']
+    description: Set the window menu bar.
+
+  - signature: MenuBar* GetMenuBar() const
+    platform: ['Windows', 'Linux']
+    description: Return the window menu bar.
+
+  - signature: Window* GetParentWindow() const
+    description: Return the parent window.
+
+  - signature: void AddChildWindow(scoped_refptr<Window> child)
+    description: Make `child` a child window of this window.
+    detail: This method will do nothing if `child` already has a parent window.
+
+  - signature: void RemoveChildWindow(Window* child)
+    description: Remove this window as `child`'s parent window.
+
+  - signature: std::vector<Window*> GetChildWindows() const
+    description: Return all the child windows of this window.
+
+events:
+  - signature: void on_close(Window* self)
+    description: Emitted when the window is closed.
+
+  - signature: void on_focus(Window* self)
+    description: Emitted when the window is focused.
+
+  - signature: void on_blur(Window* self)
+    description: Emitted when the window lost focus.
+
+delegates:
+  - signature: bool should_close(Window* self)
+    description: |
+      Called when user requests to close the window, should return whether the
+      window can be closed.

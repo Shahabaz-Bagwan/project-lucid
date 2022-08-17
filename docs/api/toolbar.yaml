@@ -1,0 +1,107 @@
+name: Toolbar
+platform: ['macOS']
+component: gui
+header: nativeui/toolbar.h
+type: refcounted
+namespace: nu
+description: Window toolbar.
+
+detail: |
+  This view is only implemented for macOS by wrapping
+  [`NSToolbar`](https://developer.apple.com/documentation/appkit/nstoolbar).
+  The API is still experimental and will be changed in future. Currently certain
+  items are not aligned correctly in toolbar.
+
+  The toolbar items are not added manually like the normal views, instead you
+  have to implement the `get_item` delegate which creates items on request, and
+  then call `SetDefaultItemIdentifiers` to specify the default items to show.
+
+  ```js
+  const toolbar = gui.Toolbar.create('my-toolbar')
+  toolbar.getItem = (toolbar, identifier) => {
+    switch (identifier) {
+      case 'entry':
+        const entry = gui.Entry.create()
+        const minSize = entry.getMinimumSize()
+        minSize.width = 200
+        const maxSize = { width: 2 << 30 - 1, height: minSize.height }
+        return { label: 'Address', view: entry, minSize, maxSize }
+      case 'button':
+        const button = gui.Button.create('GO')
+        button.setImage(gui.Image.createFromPath('go.png'))
+        return {
+          label: 'GO',
+          minSize: {width: 30, height: 35},
+          view: button
+        }
+    }
+  }
+  toolbar.setDefaultItemIdentifiers(['entry', 'button'])
+  toolbar.setDisplayMode('icon')
+  window.setToolbar(toolbar)
+  ```
+
+constructors:
+  - signature: Toolbar(const std::string& identifier)
+    lang: ['cpp']
+    description: &ref |
+      Create a new `Toolbar` view with `identifier`.
+
+      Within the application all toolbars with the same identifier are
+      synchronized to maintain the same state, including for example, the
+      display mode and item order. The identifier is used as the autosave name
+      for toolbars that save their configuration.
+
+class_methods:
+  - signature: Toolbar* Create(const std::string& identifier)
+    lang: ['lua', 'js']
+    description: *ref
+
+class_properties:
+  - property: const char* kFlexibleSpaceItemIdentifier
+    lang: ['cpp']
+    description: The identifier of the Flexible Space toolbar item.
+
+  - property: const char* kSpaceItemIdentifier
+    lang: ['cpp']
+    description: The identifier of the Space toolbar item.
+
+methods:
+  - signature: void SetDefaultItemIdentifiers(const std::vector<std::string>& identifiers)
+    description: |
+      Set the identifiers of default items that would show in toolbar.
+    parameters: &refidents
+      identifiers:
+        description: An array of toolbar items' identifiers.
+
+  - signature: void SetAllowedItemIdentifiers(const std::vector<std::string>& identifiers)
+    description: |
+      Set the identifiers of the items that are allowed to show in toolbar.
+    parameters: *refidents
+
+  - signature: void SetAllowCustomization(bool allow)
+    description: |
+      Set whether users are allowed to customize the toolbar.
+
+  - signature: void SetDisplayMode(Toolbar::DisplayMode mode)
+    description: Set the display mode of the toolbar items.
+
+  - signature: void SetVisible(bool visible)
+    description: Set whether toolbar is visible.
+
+  - signature: bool IsVisible() const
+    description: Return whether toolbar is visible.
+
+  - signature: std::string GetIdentifier() const
+    description: Return the identifier of the toolbar.
+
+  - signature: NativeToolbar GetNative() const
+    lang: ['cpp']
+    description: Return the underlying native view of the toolbar.
+
+delegates:
+  - signature: Toolbar::Item get_item(Toolbar* toolbar, const std::string& identifier)
+    description: |
+      Called lazily when the toolbar is going to get the item with `identifier`.
+
+      You should not cache the item to be returned.

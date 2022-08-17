@@ -1,0 +1,10 @@
+name: Vibrant::BlendingMode
+platform: ['macOS']
+header: nativeui/vibrant.h
+type: enum class
+namespace: nu
+description: The blending mode of a `Vibrant` view.
+
+enums:
+  - name: BehindWindow
+  - name: WithinWindow

@@ -1,0 +1,81 @@
+name: Table
+component: gui
+header: nativeui/table.h
+type: refcounted
+namespace: nu
+inherit: View
+description: Table view.
+
+detail: |
+  The `Table` does not store any data itself, to display data in `Table`, users
+  have to provide a `<!type>TableModel`.
+
+  How data are renderered depends on the type of column. It is also possible to
+  create a custom renderer for arbitrary data.
+
+constructors:
+  - signature: Table()
+    lang: ['cpp']
+    description: Create a new `Table`.
+
+class_methods:
+  - signature: Table* Create()
+    lang: ['lua', 'js']
+    description: Create a new `Table`.
+
+class_properties:
+  - property: const char* kClassName
+    lang: ['cpp']
+    description: The class name of this view.
+
+methods:
+  - signature: void SetModel(scoped_refptr<TableModel> model)
+    description: Set `model` as table's data source.
+
+  - signature: TableModel* GetModel()
+    description: Return table's model.
+
+  - signature: void AddColumn(const std::string& title)
+    description: Add a new column with `title`, which shows readonly text.
+
+  - signature: void AddColumnWithOptions(const std::string& title,
+                                         const Table::ColumnOptions& options)
+    description: Add a new column with `title` and `options`.
+
+  - signature: int GetColumnCount() const
+    description: Return the number of columns.
+
+  - signature: void SetColumnsVisible(bool visible)
+    description: Set whether the columns header is visible.
+    detail: |
+      On macOS adding column after hiding the header will result in missing
+      columns in the header even after making the header visible again.
+
+      It is recommended to never show the header again after hiding the header,
+      for consistent behaviors between platforms.
+
+  - signature: bool IsColumnsVisible() const
+    description: Return whether the columns header is visible.
+
+  - signature: void SetRowHeight(float height)
+    description: Set the `height` of each row.
+    detail: |
+      It is not recommended to change row height unless you are drawing all
+      cells yourself, as the default text cells may not show decently under
+      large or small height.
+
+      On Linux, due to platform implementations, this method has to be called
+      before adding columns. It does not have any effect when columns have
+      already been added.
+
+  - signature: float GetRowHeight() const
+    description: Return the `height` of each row.
+
+  - signature: void SelectRow(int row)
+    description: Select a `row`.
+
+  - signature: int GetSelectedRow() const
+    description: Return the index of selected row.
+    detail: |
+      For table that allows multiple selections, this will return the index of
+      first selected row. When no row is selected, `-1` will be returned.

@@ -1,0 +1,40 @@
+name: Lifetime
+component: gui
+header: nativeui/lifetime.h
+type: class
+singleton: true
+namespace: nu
+description: Application lifetime.
+detail: |
+  This class does system GUI toolkit intializations, and provides APIs around
+  native GUI toolkit's application lifetime APIs. You should not use this API
+  when integrating Yue into existing GUI apps.
+
+  When using this class, you must create `Lifetime` before creating `State`.
+
+constructor:
+  - signature: Lifetime()
+    lang: ['cpp']
+    description: |
+      Create a `Lifetime` instance, you can only have one instance per thread.
+
+events:
+  - signature: void on_ready()
+    platform: ['macOS']
+    description: |
+      Emitted when received `applicationDidFinishLaunching` notification.
+
+  - signature: void on_activate()
+    platform: ['macOS']
+    description: |
+      Emitted when received `applicationShouldHandleReopen` notification and
+      there is no visible windows. This usually happens when the app is
+      activated by Finder, or user clicks on the dock icon.
+
+delegates:
+  - signature: Lifetime::Reply open_files(std::vector<base::FilePath> files)
+    platform: ['macOS']
+    description: Called when received message to open files.
+    detail: |
+      This delegate method is usually called when the app is used to open files
+      with double clicking, or when files are dropped onto the app's dock icon.

@@ -1,0 +1,10 @@
+name: KeyEvent
+header: nativeui/events/event.h
+type: struct
+namespace: nu
+inherit: Event
+description: Keyboard event.
+
+properties:
+  - property: KeyboardCode key
+    description: The key associated with the event.

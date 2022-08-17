@@ -1,0 +1,54 @@
+name: Event
+header: nativeui/events/event.h
+type: struct
+namespace: nu
+description: Generic input event type.
+
+class_methods:
+  - signature: bool IsShiftPressed()
+    description: Return whether <kbd>Shift</kbd> key is pressed.
+
+  - signature: bool IsControlPressed()
+    description: Return whether <kbd>Control</kbd> key is pressed.
+
+  - signature: bool IsAltPressed()
+    description: Return whether <kbd>Alt</kbd> key is pressed.
+
+  - signature: bool IsMetaPressed()
+    description: |
+      Return whether <kbd>Win</kbd> or <kbd>Command</kbd> key is pressed.
+
+class_properties:
+  - property: int MaskShift
+    lang: ['lua', 'js']
+    description: Modifier for <kbd>Shift</kbd> key.
+
+  - property: int MaskContrl
+    lang: ['lua', 'js']
+    description: Modifier for <kbd>Control</kbd> key.
+
+  - property: int MaskAlt
+    lang: ['lua', 'js']
+    description: Modifier for <kbd>Alt</kbd> key.
+
+  - property: int MaskMeta
+    lang: ['lua', 'js']
+    description: Modifier for <kbd>Win</kbd> or <kbd>Command</kbd> key.
+
+properties:
+  - property: EventType type
+    description: The type of the event.
+
+  - property: int modifiers
+    description: A bit array of keyboard modifiers of the event.
+    lang_detail:
+      cpp: |
+        Available modifiers can be found in `<!type>KeyboardModifier`.
+
+  - property: uint32_t timestamp
+    description: |
+      Time when event was created, starts from when machine was booted.
+
+  - property: NativeEvent native_event
+    lang: ['cpp']
+    description: The underlying native event.

@@ -1,0 +1,245 @@
+name: View
+component: gui
+header: nativeui/view.h
+type: refcounted
+namespace: nu
+inherit: Responder
+description: Base class for GUI components.
+
+detail: |
+  `View` provides methods to receive and change various style properties.
+
+lang_detail:
+  cpp: |
+    `View` is a `RefCounted` type. Sub-classes of `View` can only be created on
+    heap, and must be managed with `scoped_refptr`.
+    Every API that accepets `View*` will store a reference to the pointer, so it
+    is safe to pass a newly created raw pointer to public APIs.
+
+    ```cpp
+    scoped_refptr<nu::Container> container = new nu::Container;
+    container->AddChildView(new nu::Label("child"));
+    ```
+
+methods:
+  - signature: Vector2dF OffsetFromView(const View* view) const
+    description: Return offset from `view`.
+
+  - signature: Vector2dF OffsetFromWindow() const
+    description: Return offset from the window that owns the view.
+
+  - signature: RectF GetBounds() const
+    description: Return the position and size of the view, relative to its parent.
+
+  - signature: void Layout()
+    description: Make the view re-recalculate its layout.
+
+  - signature: void SchedulePaint()
+    description: Schedule to repaint the whole view.
+
+  - signature: void SchedulePaintRect(const RectF& rect)
+    description: Schedule to repaint the `rect` area in view.
+
+  - signature: void SetVisible(bool visible)
+    description: Show/Hide the view.
+
+  - signature: bool IsVisible() const
+    description: Return whether the view is visible.
+
+  - signature: void SetEnabled(bool enable)
+    description: Set whether the view is enabled.
+    detail: |
+      The enabled state of each view is not affected by its parent, disabling
+      a container-like view does not have any effect.
+
+  - signature: bool IsEnabled() const
+    description: Return whether the view is enabled.
+
+  - signature: void Focus()
+    description: Move the keyboard focus to the view.
+
+  - signature: bool HasFocus() const
+    description: Return whether the view has keyboard focus.
+
+  - signature: void SetFocusable(bool focusable)
+    description: Set whether the view can be focused on.
+
+  - signature: bool IsFocusable() const
+    description: Return whether the view can be focused on.
+
+  - signature: void SetMouseDownCanMoveWindow(bool can)
+    description: Set whether dragging mouse would move the window.
+    detail: |
+      For most platforms this method only works for frameless windows, having
+      this feature may also prevent mouse events to happen.
+
+      On macOS the `Container` view has this feature turned on by default. To
+      turn this feature on for the view, the view's parent view must also has
+      this feature turned on.
+
+      On Windows the view with this feature will be treated as titlebar, e.g.
+      double-clicking would maximize the window, right-clicking may show the
+      system menu.
+
+  - signature: bool IsMouseDownCanMoveWindow() const
+    description: Return whether dragging the view would move the window.
+
+  - signature: int DoDrag(std::vector<Clipboard::Data> data, int operations)
+    description: Like `DoDragWithOptions` but do not set drag image.
+
+  - signature: int DoDragWithOptions(std::vector<Clipboard::Data> data, int operations, const DragOptions& options)
+    description: Start a drag session.
+    detail: |
+      The return value is a `<!type>DragOperation` indicating the result of
+      dragging.
+
+      This method should only be called in the `on_mouse_down` event, when user
+      starts to drag the cursor.
+
+      This method is blocking that it does not return until the drag session is
+      finished or cancelled. During the call a nested UI message loop will run
+      and other events will still be emitted.
+
+      Note that on macOS certain views may have `IsMouseDownCanMoveWindow`
+      defaulting to `true`, which will prevent drag session to start. Make sure
+      to call `SetMouseDownCanMoveWindow(false)` for drag sources.
+    parameters:
+      data:
+        description: |
+          An array of `<!type>Clipboard::Data` that will be passed to drop
+          target.
+      operations:
+        description: |
+          Must be one or more of `<!type>DragOperation` masks, indicates which
+          drag operations are supported.
+      image:
+        description: |
+          The image that will show beside the cursor when dragging.
+
+  - signature: void CancelDrag()
+    description: Cancel current drag session if the view is being used as drag source.
+
+  - signature: bool IsDragging() const
+    description: Return whether the view is being used as drag source.
+
+  - signature: void RegisterDraggedTypes(std::set<Clipboard::Data::Type> types)
+    description: Make the view a drag destination that accepets `types`.
+    parameters:
+      types:
+        description: An array of `<!type>Clipboard::Data::Type`.
+
+  - signature: void SetCursor(scoped_refptr<Cursor> cursor)
+    description: Set the cursor to show when hovering the view.
+    detail: |
+      On Linux, setting cursor would force the view to own its own GDK window.
+      For certain views like `Label`, this may have remove the view's background
+      color.
+
+  - signature: void SetFont(scoped_refptr<Font> font)
+    description: Change the font used for drawing text in the view.
+    detail: |
+      This methods only works for `View`s that display text, like `Label` or
+      `Entry`.
+
+  - signature: void SetColor(Color color)
+    description: Change the color used for drawing text in the view.
+    detail: |
+      This methods only works for `View`s that display text, like `Label` or
+      `Entry`.
+
+  - signature: void SetBackgroundColor(Color color)
+    description: Change the background color of the view.
+
+  - signature: void SetStyle(Args... styles)
+    lang: ['cpp']
+    parameters:
+      styles:
+        description: |
+          Variadic parameters that are pairs of keys and values.
+    description: Change the styles of the view.
+    detail: |
+      Available style properties can be found at
+      [Layout System](../guides/layout_system.html).
+
+      ```cpp
+      view->SetStyle("flex", 1, "flex-direction", "row");
+      ```
+
+  - signature: void SetStyle(Dictionary styles)
+    lang: ['lua', 'js']
+    parameters:
+      styles:
+        description: |
+          A key-value dictionary that defines the name and value of the style
+          properties, key must be string, and value must be either string or
+          number.
+    description: Change the styles of the view.
+    detail: |
+      Available style properties can be found at
+      [Layout System](../guides/layout_system.html).
+
+  - signature: std::string GetComputedLayout() const
+    description: Return string representation of the view's layout.
+
+  - signature: SizeF GetMinimumSize() const
+    description: Return the minimum size needed to show the view.
+
+  - signature: View* GetParent() const
+    description: Return parent view.
+
+  - signature: Window* GetWindow() const
+    description: Return the window that the view belongs to.
+
+events:
+  - signature: void on_drag_leave(View* self, DraggingInfo* info)>
+    description: Emitted when cursor leaves the view while dragging.
+    detail: |
+      This event will also be emitted before the `handle_drop` event when user
+      drops the data on the view.
+
+  - signature: void on_size_changed(View* self)
+    description: Emitted when the view's size has been changed.
+
+delegates:
+  - signature: int handle_drag_enter(View* self, DraggingInfo* info, const PointF& point)
+    description: |
+      Called when user drags the cursor over the view for the first time.
+    detail: |
+      A `<!type>DragOperation` should be returned, indicating which dragging
+      operation the destination will perform when cursor is released.
+
+      This delegate will not be called if the view has not registered dragged
+      types, or if the dragged data does not belong to the registered type.
+
+      On Linux the dragged data is not yet available when this is called, you
+      should usually only read data in the `handle_drop` delegate.
+
+  - signature: int handle_drag_update(View* self, DraggingInfo* info, const PointF& point)
+    description: |
+      Called when user moves the cursor over the view while dragging.
+    detail: |
+      A `<!type>DragOperation` should be returned, indicating which dragging
+      operation the destination will perform when cursor is released.
+
+      If this delegate is not implemented, the return value of previous
+      `handle_drag_enter` call will be returned.
+
+      This delegate is usually used when implementing a custom view with
+      multiple dropping areas, you only need to implement `handle_drag_enter`
+      for simple tasks.
+
+      On Linux the dragged data is not yet available when this is called, you
+      should usually only read data in the `handle_drop` delegate.
+
+  - signature: bool handle_drop(View* self, DraggingInfo* info, const PointF& point)
+    description: Called when user releases the dragged data on the view.
+    detail: |
+      Returning `true` will inform the drag source that the data has been
+      accepted with the drag operation returned by previous `handle_drag_enter`
+      or `handle_drag_update` call.
+
+      If the drag operation is `Move`, the drag source may also take actions
+      to "remove" the data on its side.
+
+      Returning `false` will inform the drag source that the drag has been
+      cancelled, and operating system may display some visual effects.

@@ -1,0 +1,15 @@
+# This file is published under public domain.
+
+executable("sample_app") {
+  sources = [ "main.cc" ]
+
+  deps = [
+    "//base",
+    "//nativeui",
+  ]
+
+  if (is_win) {
+    configs -= [ "//build/config/win:console" ]
+    configs += [ "//build/config/win:windowed" ]
+  }
+}

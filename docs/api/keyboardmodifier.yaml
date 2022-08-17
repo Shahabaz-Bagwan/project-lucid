@@ -1,0 +1,14 @@
+name: KeyboardModifier
+lang: ['cpp']
+header: nativeui/events/keyboard_codes.h
+type: enum
+namespace: nu
+description: The keyboard modifier masks.
+
+detail: |
+  `KeyboardModifier` is an `enum` with following values:
+
+  * `MASK_SHIFT`
+  * `MASK_CONTROL`
+  * `MASK_ALT`
+  * `MASK_META`

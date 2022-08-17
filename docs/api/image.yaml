@@ -1,0 +1,60 @@
+name: Image
+component: gui
+header: nativeui/gfx/image.h
+type: refcounted
+namespace: nu
+description: Native image.
+
+detail: |
+  ## High DPI Image
+
+  By appending `@{scaleFactor}x` to the image's base filename, you can mark
+  the image as a high DPI image. For example an image file with filename of
+  `icon@2x.png` will have scale factor of 2.
+
+  ## Template Image
+
+  On macOS you can mark an image as template image by putting `Template` to
+  its base filename, for example `iconTemplate.png` and `iconTemplate@2x.png`.
+
+  Template images should consist of only black and clear colors, and macOS will
+  mix with other content to create best appearance. This is useful for tray
+  icons and menu item icons that automatically adjust to light and dark themes.
+
+constructors:
+  - signature: Image()
+    lang: ['cpp']
+    description: &ref1 Create an empty image.
+
+  - signature: Image(const base::FilePath& path)
+    lang: ['cpp']
+    description: &ref2 Create an image by reading from `path`.
+
+  - signature: Image(const Buffer& buffer, float scale_factor)
+    lang: ['cpp']
+    description: &ref3 |
+      Create an image from `buffer` in memory, with `scale_factor`.
+
+class_methods:
+  - signature: Image CreateEmpty()
+    lang: ['lua', 'js']
+    description: *ref1
+
+  - signature: Image CreateFromPath(const base::FilePath& path)
+    lang: ['lua', 'js']
+    description: *ref2
+
+  - signature: Image CreateFromBuffer(const Buffer& buffer, float scale_factor)
+    lang: ['lua', 'js']
+    description: *ref3
+
+methods:
+  - signature: SizeF GetSize() const
+    description: Return image's size in DIP.
+
+  - signature: float GetScaleFactor() const
+    description: Return image's scale factor.
+
+  - signature: NativeImage GetNative() const
+    lang: ['cpp']
+    description: Return the native instance wrapped by the class.

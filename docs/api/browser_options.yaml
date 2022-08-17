@@ -1,0 +1,46 @@
+name: Browser::Options
+header: nativeui/browser.h
+type: struct
+namespace: nu
+description: Options for creating browser.
+
+properties:
+  - property: bool devtools
+    optional: true
+    description: Whether the browser can show devtools, default is `false`.
+    detail: |
+      Depending on platform, the option to show devtools is usually in the
+      context menu, so you should also enable builtin context menu when using
+      this option.
+
+      This option is not working on Windows when IE is used as backend.
+
+  - property: bool context_menu
+    optional: true
+    description: Whether to use builtin context menu, default is `false`.
+    detail: |
+      On macOS due to the limitation of system APIs, right-clicking certain
+      elements would still popup a menu with Services items.
+
+  - property: bool allow_file_access_from_files
+    optional: true
+    description: Whether file access is allowed from file URLs, default is `false`.
+    platform: ['macOS', 'Linux']
+    detail: |
+      By default, when something is loaded in using a file URI, cross origin
+      requests to other file resources are not allowed. This setting allows
+      you to change that behaviour, so that it would be possible to do a
+      `XMLHttpRequest` of a local file, for example.
+
+  - property: bool hardware_acceleration
+    optional: true
+    description: Whether to enable hardware acceleration, default is `true`.
+    platform: ['Linux']
+
+  - property: bool webview2_support
+    optional: true
+    description: Whether to use WebView2 as backend, default is `false`.
+    platform: ['Windows']
+    detail: |
+      Please read [WebView2 support](./browser.html#webview2-support) for more
+      information.
