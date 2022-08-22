@@ -1,3 +1,0 @@
-Yue Version: 
-Operating System: 
-
