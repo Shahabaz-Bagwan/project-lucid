@@ -1,3 +1,21 @@
 [submodule "thirdparty/opencv"]
 	path = thirdparty/opencv
 	url = git@github.com:opencv/opencv.git
+[submodule "thirdparty/nanogui"]
+	path = thirdparty/nanogui
+	url = https://github.com/wjakob/nanogui
+[submodule "thirdparty/yue"]
+	path = thirdparty/yue
+	url = https://github.com/yue/yue
+[submodule "thirdparty/fltk"]
+	path = thirdparty/fltk
+	url = https://github.com/fltk/fltk
+[submodule "thirdparty/GuiLite"]
+	path = thirdparty/GuiLite
+	url = https://github.com/idea4good/GuiLite
+[submodule "thirdparty/wxWidgets"]
+	path = thirdparty/wxWidgets
+	url = https://github.com/wxWidgets/wxWidgets
+[submodule "thirdparty/imgui"]
+	path = thirdparty/imgui
+	url = https://github.com/ocornut/imgui
