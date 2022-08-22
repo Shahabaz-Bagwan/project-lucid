@@ -1,7 +1,7 @@
 project(exmaple1)
 
 file(GLOB SOURCES
-"src/*.cpp"
+	"src/*.cpp"
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -12,5 +12,6 @@ add_executable(
 )
 
 # Link dependencies
-target_link_libraries (${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
+	project-lucid_shared
 )

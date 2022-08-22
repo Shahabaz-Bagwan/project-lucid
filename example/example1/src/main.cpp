@@ -1,4 +1,5 @@
 #include <iostream>
+#include <project-lucid/lib.h>
 
 int main( int argc, char* argv[] )
 {
