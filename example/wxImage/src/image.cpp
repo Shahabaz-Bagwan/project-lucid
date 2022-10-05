@@ -9,7 +9,8 @@
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "canvas.h"
+// #include "canvas.h"
+#include <project-lucid/lib.h>
 
 // ============================================================================
 // declarations
@@ -43,8 +44,6 @@ public:
   void OnUpdateNewFrameHiDPI( wxUpdateUIEvent& );
 
   void OnQuit( wxCommandEvent& event );
-
-  MyCanvas* m_canvas;
 
 private:
   // ask user for the file name and try to load an image from it
@@ -226,22 +225,9 @@ private:
                       "PNG files (*.png)|*.png|"
 #endif
 #if wxUSE_LIBJPEG
-                      "JPEG files (*.jpg)|*.jpg|"
+                      "JPEG files (*.jpg)|*.jpg|",
 #endif
-#if wxUSE_GIF
-                      "GIF files (*.gif)|*.gif|"
-#endif
-#if wxUSE_LIBTIFF
-                      "TIFF files (*.tif)|*.tif|"
-#endif
-#if wxUSE_PCX
-                      "PCX files (*.pcx)|*.pcx|"
-#endif
-#if wxUSE_XPM
-                      "X PixMap files (*.xpm)|*.xpm|"
-#endif
-                      "ICO files (*.ico)|*.ico|"
-                      "CUR files (*.cur)|*.cur",
+
                       wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this );
 
     if( savefilename.empty() )
@@ -508,136 +494,6 @@ private:
 
   wxDECLARE_EVENT_TABLE();
 };
-
-#ifdef wxHAVE_RAW_BITMAP
-
-#include "wx/rawbmp.h"
-
-class MyRawBitmapFrame : public wxFrame
-{
-public:
-  enum
-  {
-    BORDER    = 15,
-    SIZE      = 150,
-    REAL_SIZE = SIZE - 2 * BORDER
-  };
-
-  MyRawBitmapFrame( wxFrame* parent )
-    : wxFrame( parent, wxID_ANY, "Raw bitmaps (how exciting)" ),
-      m_bitmap( SIZE, SIZE, 24 ), m_alphaBitmap( SIZE, SIZE, 32 )
-  {
-    SetClientSize( SIZE, SIZE * 2 + 25 );
-
-    InitAlphaBitmap();
-    InitBitmap();
-  }
-
-  void InitAlphaBitmap()
-  {
-    // First, clear the whole bitmap by making it alpha
-    {
-      wxAlphaPixelData data( m_alphaBitmap, wxPoint( 0, 0 ),
-                             wxSize( SIZE, SIZE ) );
-      if( !data ) {
-        wxLogError( "Failed to gain raw access to bitmap data" );
-        return;
-      }
-      wxAlphaPixelData::Iterator p( data );
-      for( int y = 0; y < SIZE; ++y ) {
-        wxAlphaPixelData::Iterator rowStart = p;
-        for( int x = 0; x < SIZE; ++x ) {
-          p.Alpha() = 0;
-          ++p; // same as p.OffsetX(1)
-        }
-        p = rowStart;
-        p.OffsetY( data, 1 );
-      }
-    }
-
-    // Then, draw colourful alpha-blended stripes
-    wxAlphaPixelData data( m_alphaBitmap, wxPoint( BORDER, BORDER ),
-                           wxSize( REAL_SIZE, REAL_SIZE ) );
-    if( !data ) {
-      wxLogError( "Failed to gain raw access to bitmap data" );
-      return;
-    }
-
-    wxAlphaPixelData::Iterator p( data );
-
-    for( int y = 0; y < REAL_SIZE; ++y ) {
-      wxAlphaPixelData::Iterator rowStart = p;
-
-      int r = y < REAL_SIZE / 3 ? 255 : 0,
-          g = ( REAL_SIZE / 3 <= y ) && ( y < 2 * ( REAL_SIZE / 3 ) ) ? 255 : 0,
-          b = 2 * ( REAL_SIZE / 3 ) <= y ? 255 : 0;
-
-      for( int x = 0; x < REAL_SIZE; ++x ) {
-        // note that RGB must be premultiplied by alpha
-        unsigned a = ( wxAlphaPixelData::Iterator::ChannelType )( ( x * 255. ) /
-                                                                  REAL_SIZE );
-        p.Red()    = r * a / 256;
-        p.Green()  = g * a / 256;
-        p.Blue()   = b * a / 256;
-        p.Alpha()  = a;
-
-        ++p; // same as p.OffsetX(1)
-      }
-
-      p = rowStart;
-      p.OffsetY( data, 1 );
-    }
-  }
-
-  void InitBitmap()
-  {
-    // draw some colourful stripes without alpha
-    wxNativePixelData data( m_bitmap );
-    if( !data ) {
-      wxLogError( "Failed to gain raw access to bitmap data" );
-      return;
-    }
-
-    wxNativePixelData::Iterator p( data );
-    for( int y = 0; y < SIZE; ++y ) {
-      wxNativePixelData::Iterator rowStart = p;
-
-      int r = y < SIZE / 3 ? 255 : 0,
-          g = ( SIZE / 3 <= y ) && ( y < 2 * ( SIZE / 3 ) ) ? 255 : 0,
-          b = 2 * ( SIZE / 3 ) <= y ? 255 : 0;
-
-      for( int x = 0; x < SIZE; ++x ) {
-        p.Red()   = r;
-        p.Green() = g;
-        p.Blue()  = b;
-        ++p; // same as p.OffsetX(1)
-      }
-
-      p = rowStart;
-      p.OffsetY( data, 1 );
-    }
-  }
-
-  void OnPaint( wxPaintEvent& WXUNUSED( event ) )
-  {
-    wxPaintDC dc( this );
-    dc.DrawText( "This is alpha and raw bitmap test", 0, BORDER );
-    dc.DrawText( "This is alpha and raw bitmap test", 0, SIZE / 2 - BORDER );
-    dc.DrawText( "This is alpha and raw bitmap test", 0, SIZE - 2 * BORDER );
-    dc.DrawBitmap( m_alphaBitmap, 0, 0, true /* use mask */ );
-
-    dc.DrawText( "Raw bitmap access without alpha", 0, SIZE + 5 );
-    dc.DrawBitmap( m_bitmap, 0, SIZE + 5 + dc.GetCharHeight() );
-  }
-
-private:
-  wxBitmap m_bitmap;
-  wxBitmap m_alphaBitmap;
-
-  wxDECLARE_EVENT_TABLE();
-};
-
-#endif // wxHAVE_RAW_BITMAP
 
 class MyFiltersFrame : public wxFrame
 {
@@ -936,18 +792,6 @@ wxBEGIN_EVENT_TABLE( MyImageFrame, wxFrame ) EVT_ERASE_BACKGROUND(
                         EVT_MENU( ID_ZOOM_BOX_AVERAGE, MyImageFrame::OnUseZoom )
                           wxEND_EVENT_TABLE()
 
-//-----------------------------------------------------------------------------
-// MyRawBitmapFrame
-//-----------------------------------------------------------------------------
-
-#ifdef wxHAVE_RAW_BITMAP
-
-                            wxBEGIN_EVENT_TABLE( MyRawBitmapFrame, wxFrame )
-                              EVT_PAINT( MyRawBitmapFrame::OnPaint )
-                                wxEND_EVENT_TABLE()
-
-#endif // wxHAVE_RAW_BITMAP
-
   //-----------------------------------------------------------------------------
   // MyFrame
   //-----------------------------------------------------------------------------
@@ -976,7 +820,6 @@ wxBEGIN_EVENT_TABLE( MyFrame, wxFrame ) EVT_MENU( ID_ABOUT, MyFrame::OnAbout )
   : wxFrame( (wxFrame*)NULL, wxID_ANY, "wxImage sample", wxPoint( 20, 20 ),
              wxSize( 950, 700 ) )
 {
-  // SetIcon( wxICON( sample ) );
 
   wxMenuBar* menu_bar = new wxMenuBar();
 
@@ -1003,12 +846,6 @@ wxBEGIN_EVENT_TABLE( MyFrame, wxFrame ) EVT_MENU( ID_ABOUT, MyFrame::OnAbout )
   int widths[] = { -1, 100 };
   SetStatusWidths( 2, widths );
 #endif // wxUSE_STATUSBAR
-
-  m_canvas = new MyCanvas( this, wxID_ANY, wxPoint( 0, 0 ), wxSize( 10, 10 ) );
-
-  // 500 width * 2750 height
-  m_canvas->SetScrollbars( 10, 10, 50, 275 );
-  m_canvas->SetCursor( wxImage( "cursor.png" ) );
 }
 
 void MyFrame::OnQuit( wxCommandEvent& WXUNUSED( event ) ) { Close( true ); }
