@@ -17,13 +17,9 @@
 // ----------------------------------------------------------------------------
 
 // For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/event.h"
+#include "wx/filepicker.h"
 #include <project-lucid/lib.h>
-
-// for all others, include the necessary headers (this file is usually all you
-// need because it includes almost all "standard" wxWidgets headers)
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
 
 // ----------------------------------------------------------------------------
 // resources
@@ -61,6 +57,7 @@ public:
 
   // event handlers (these functions should _not_ be virtual)
   void OnQuit( wxCommandEvent& event );
+  void OnOpen( wxCommandEvent& event );
   void OnAbout( wxCommandEvent& event );
 
 private:
@@ -77,6 +74,7 @@ enum
 {
   // menu items
   Minimal_Quit = wxID_EXIT,
+  Minimal_Open = wxID_OPEN,
 
   // it is important for the id corresponding to the "About" command to have
   // this standard value as otherwise it won't be handled properly under Mac
@@ -93,7 +91,8 @@ enum
 // simple menu events like this the static method is much simpler.
 wxBEGIN_EVENT_TABLE( MyFrame, wxFrame )
   EVT_MENU( Minimal_Quit, MyFrame::OnQuit )
-    EVT_MENU( Minimal_About, MyFrame::OnAbout ) wxEND_EVENT_TABLE()
+    EVT_MENU( Minimal_Open, MyFrame::OnOpen )
+      EVT_MENU( Minimal_About, MyFrame::OnAbout ) wxEND_EVENT_TABLE()
 
   // Create a new application object: this macro will allow wxWidgets to create
   // the application object during program execution (it's better than using a
@@ -148,8 +147,9 @@ MyFrame::MyFrame( const wxString& title ) : wxFrame( NULL, wxID_ANY, title )
   // the "About" item should be in the help menu
   wxMenu* helpMenu = new wxMenu;
   helpMenu->Append( Minimal_About, "&About\tF1", "Show about dialog" );
-
+  fileMenu->Append( Minimal_Open, "O&pen\tAlt-o", "Open File" );
   fileMenu->Append( Minimal_Quit, "E&xit\tAlt-X", "Quit this program" );
+  // fileMenu->Append( this->OnOpen, "E&xit\tAlt-X", "Quit this program" );
 
   // now append the freshly created menu to the menu bar...
   wxMenuBar* menuBar = new wxMenuBar();
@@ -182,6 +182,33 @@ void MyFrame::OnQuit( wxCommandEvent& WXUNUSED( event ) )
   Close( true );
 }
 
+void MyFrame::OnOpen( wxCommandEvent& WXUNUSED( event ) )
+{
+
+  // if( ... current content has not been saved... ) {
+  //   if( wxMessageBox( _( "Current content has not been saved! Proceed?" ),
+  //                     _( "Please confirm" ), wxICON_QUESTION | wxYES_NO,
+  //                     this ) == wxNO )
+  //     return;
+  //   // else: proceed asking to the user the new file to open
+  // }
+
+  wxFileDialog openFileDialog(
+    this, _( "Open image files" ), "", "",
+    "Supported image files (*.bmp;*png;*jpeg;*.wmc)|*.bmp;*.wmc;*.png;*jpeg",
+    wxFD_OPEN | wxFD_FILE_MUST_EXIST );
+
+  if( openFileDialog.ShowModal() == wxID_CANCEL )
+    return; // the user changed idea...
+
+  // proceed loading the file chosen by the user;
+  // this can be done with e.g. wxWidgets input streams:
+  wxFileInputStream input_stream( openFileDialog.GetPath() );
+  if( !input_stream.IsOk() ) {
+    wxLogError( "Cannot open file '%s'.", openFileDialog.GetPath() );
+    return;
+  }
+}
 void MyFrame::OnAbout( wxCommandEvent& WXUNUSED( event ) )
 {
   wxMessageBox( wxString::Format( "Welcome to %s!\n"
