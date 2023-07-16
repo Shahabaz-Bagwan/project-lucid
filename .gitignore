@@ -12,3 +12,4 @@ ipch/
 *.ncb
 *.sdf
 *compile_commands.json
+*.ini
