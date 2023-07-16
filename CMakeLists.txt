@@ -15,9 +15,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # collect all the .cxx needed for executable
-filE(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
-add_subdirectory(thirdparty/wxWidgets)
 add_subdirectory(thirdparty/opencv)
 add_subdirectory(example)
 
@@ -26,20 +25,16 @@ find_package(OpenCV REQUIRED)
 # Create library
 add_library(${PROJECT_NAME}_shared SHARED ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME}_shared PUBLIC wx::net wx::core wx::base ${OpenCV_LIBS})
+target_link_libraries(${PROJECT_NAME}_shared PUBLIC ${OpenCV_LIBS})
 
-target_include_directories(${PROJECT_NAME}_shared PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/wxWidgets
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/opencv
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+target_include_directories(
+  ${PROJECT_NAME}_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/opencv
+                                ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_library(${PROJECT_NAME}_static STATIC ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME}_static PUBLIC wx::net wx::core wx::base ${OpenCV_LIBS})
+target_link_libraries(${PROJECT_NAME}_static PUBLIC ${OpenCV_LIBS})
 
-target_include_directories(${PROJECT_NAME}_static PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/wxWidgets
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/opencv
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+target_include_directories(
+  ${PROJECT_NAME}_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/opencv
+                                ${CMAKE_CURRENT_SOURCE_DIR}/include)
