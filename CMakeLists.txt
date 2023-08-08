@@ -1,8 +1,10 @@
-# min. version of cmake required for this project
-cmake_minimum_required(VERSION 3.10)
+# Use the variable PROJECT_NAME for changing the target name
+get_filename_component(ProjectId ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+string(REPLACE " " "_" ProjectId ${ProjectId})
+set(PROJECT_NAME ${ProjectId})
 
-# name of the project
-project(project-lucid)
+cmake_minimum_required(VERSION 3.1)
+project(${PROJECT_NAME})
 
 # Required to use vim as cpp ide
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
