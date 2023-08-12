@@ -1,3 +1,4 @@
+#include <L2DFileDialog.h>
 #include <project-lucid/lib.h>
 // Dear ImGui: standalone example application for GLFW + OpenGL 3, using
 // programmable pipeline (GLFW is a cross-platform general purpose library for
@@ -144,6 +145,24 @@ int main( int, char** )
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    static char* file_dialog_buffer = nullptr;
+    static char path[ 500 ]         = "";
+
+    ImGui::TextUnformatted( "Path: " );
+    ImGui::InputText( "##path", path, sizeof( path ) );
+    ImGui::SameLine();
+    if( ImGui::Button( "Browse##path" ) ) {
+      file_dialog_buffer           = path;
+      FileDialog::file_dialog_open = true;
+      FileDialog::file_dialog_open_type =
+        FileDialog::FileDialogType::SelectFolder;
+    }
+
+    if( FileDialog::file_dialog_open ) {
+      FileDialog::ShowFileDialog(
+        &FileDialog::file_dialog_open, file_dialog_buffer,
+        sizeof( file_dialog_buffer ), FileDialog::file_dialog_open_type );
+    }
     // 1. Show the big demo window (Most of the sample code is in
     // ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear
     // ImGui!).
