@@ -111,18 +111,12 @@ int main( int argc, char const* argv[] )
 
   bool show_demo_window    = true;
   bool show_another_window = false;
-  ImVec4 clear_color =
-    ImVec4( 0.0f / 255.0, 0.0f / 255.0, 0.0f / 255.0, 1.00f );
-  ImVec4 white_color =
-    ImVec4( 255.0f / 255.0, 255.0f / 255.0, 255.0f / 255.0, 1.00f );
-  ImVec4 blue_color =
-    ImVec4( 0.0f / 255.0, 0.0f / 255.0, 170.0f / 255.0, 1.00f );
-  ImVec4 pink_color =
-    ImVec4( 179.0f / 255.0, 12.0f / 255.0, 130.0f / 255.0, 1.00f );
-  ImVec4 gray_color =
-    ImVec4( 150.0f / 255.0, 10.0f / 160.0, 170.0f / 255.0, 1.00f );
-  ImVec4 black_color =
-    ImVec4( 0.0f / 255.0, 0.0f / 255.0, 0.0f / 255.0, 1.00f );
+  ImVec4 clear_color       = ImVec4( 0.0f / 255.0, 0.0f / 255.0, 0.0f / 255.0, 1.00f );
+  ImVec4 white_color       = ImVec4( 255.0f / 255.0, 255.0f / 255.0, 255.0f / 255.0, 1.00f );
+  ImVec4 blue_color        = ImVec4( 0.0f / 255.0, 0.0f / 255.0, 170.0f / 255.0, 1.00f );
+  ImVec4 pink_color        = ImVec4( 179.0f / 255.0, 12.0f / 255.0, 130.0f / 255.0, 1.00f );
+  ImVec4 gray_color        = ImVec4( 150.0f / 255.0, 10.0f / 160.0, 170.0f / 255.0, 1.00f );
+  ImVec4 black_color       = ImVec4( 0.0f / 255.0, 0.0f / 255.0, 0.0f / 255.0, 1.00f );
 
   bool flag = true;
 
@@ -162,15 +156,13 @@ int main( int argc, char const* argv[] )
       for( int jj = 0; jj < grid.mesh.size() - 1; jj++ ) // x
       {
         ImVec2 a_2( (float)ii * step + (float)step / 2, (float)jj * step );
-        ImVec2 b_2( (float)( ii + 1 ) * step,
-                    (float)jj * step + (float)step / 2 );
-        ImVec2 c_2( (float)ii * step + (float)step / 2,
-                    (float)( jj + 1 ) * step );
+        ImVec2 b_2( (float)( ii + 1 ) * step, (float)jj * step + (float)step / 2 );
+        ImVec2 c_2( (float)ii * step + (float)step / 2, (float)( jj + 1 ) * step );
         ImVec2 d_2( (float)ii * step, (float)jj * step + (float)step / 2 );
 
-        auto decision = grid.lookUpTable(
-          grid.mesh[ jj ][ ii ], grid.mesh[ jj ][ ii + 1 ],
-          grid.mesh[ jj + 1 ][ ii + 1 ], grid.mesh[ jj + 1 ][ ii ] );
+        auto decision =
+          grid.lookUpTable( grid.mesh[ jj ][ ii ], grid.mesh[ jj ][ ii + 1 ],
+                            grid.mesh[ jj + 1 ][ ii + 1 ], grid.mesh[ jj + 1 ][ ii ] );
 
         switch( decision ) {
 

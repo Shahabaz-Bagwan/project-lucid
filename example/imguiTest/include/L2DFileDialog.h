@@ -47,14 +47,12 @@ namespace FileDialog {
   static bool file_dialog_open                = false;
   static FileDialogType file_dialog_open_type = FileDialogType::OpenFile;
 
-  void ShowFileDialog( bool* open, char* buffer,
-                       [[maybe_unused]] unsigned int buffer_size,
+  void ShowFileDialog( bool* open, char* buffer, [[maybe_unused]] unsigned int buffer_size,
                        FileDialogType type = FileDialogType::OpenFile )
   {
-    static int file_dialog_file_select_index   = 0;
-    static int file_dialog_folder_select_index = 0;
-    static std::string file_dialog_current_path =
-      std::filesystem::current_path().string();
+    static int file_dialog_file_select_index        = 0;
+    static int file_dialog_folder_select_index      = 0;
+    static std::string file_dialog_current_path     = std::filesystem::current_path().string();
     static std::string file_dialog_current_file     = "";
     static std::string file_dialog_current_folder   = "";
     static char file_dialog_error[ 500 ]            = "";
@@ -89,15 +87,13 @@ namespace FileDialog {
 
       ImGui::SetNextWindowSize( ImVec2( 740.0f, 410.0f ) );
       const char* window_title =
-        ( type == FileDialogType::OpenFile ? "Select a file"
-                                           : "Select a folder" );
+        ( type == FileDialogType::OpenFile ? "Select a file" : "Select a folder" );
       ImGui::Begin( window_title, nullptr, ImGuiWindowFlags_NoResize );
 
       std::vector< std::filesystem::directory_entry > files;
       std::vector< std::filesystem::directory_entry > folders;
       try {
-        for( auto& p :
-             std::filesystem::directory_iterator( file_dialog_current_path ) ) {
+        for( auto& p : std::filesystem::directory_iterator( file_dialog_current_path ) ) {
           if( p.is_directory() ) {
             folders.push_back( p );
           } else {
@@ -116,17 +112,14 @@ namespace FileDialog {
                              ImVec2( ImGui::GetContentRegionAvail().x, 0 ) ) ) {
         if( ImGui::IsMouseDoubleClicked( 0 ) ) {
           file_dialog_current_path =
-            std::filesystem::path( file_dialog_current_path )
-              .parent_path()
-              .string();
+            std::filesystem::path( file_dialog_current_path ).parent_path().string();
         }
       }
       for( int i = 0; i < folders.size(); ++i ) {
-        if( ImGui::Selectable(
-              folders[ i ].path().stem().string().c_str(),
-              i == file_dialog_folder_select_index,
-              ImGuiSelectableFlags_AllowDoubleClick,
-              ImVec2( ImGui::GetWindowContentRegionWidth(), 0 ) ) ) {
+        if( ImGui::Selectable( folders[ i ].path().stem().string().c_str(),
+                               i == file_dialog_folder_select_index,
+                               ImGuiSelectableFlags_AllowDoubleClick,
+                               ImVec2( ImGui::GetWindowContentRegionWidth(), 0 ) ) ) {
           file_dialog_current_file = "";
           if( ImGui::IsMouseDoubleClicked( 0 ) ) {
             file_dialog_current_path        = folders[ i ].path().string();
@@ -136,7 +129,7 @@ namespace FileDialog {
             file_dialog_current_folder = "";
           } else {
             file_dialog_folder_select_index = i;
-            file_dialog_current_folder = folders[ i ].path().stem().string();
+            file_dialog_current_folder      = folders[ i ].path().stem().string();
           }
         }
       }
@@ -167,36 +160,35 @@ namespace FileDialog {
         date_sort_order = FileDialogSortOrder::None;
         type_sort_order = FileDialogSortOrder::None;
         file_name_sort_order =
-          ( file_name_sort_order == FileDialogSortOrder::Down
-              ? FileDialogSortOrder::Up
-              : FileDialogSortOrder::Down );
+          ( file_name_sort_order == FileDialogSortOrder::Down ? FileDialogSortOrder::Up
+                                                              : FileDialogSortOrder::Down );
       }
       ImGui::NextColumn();
       if( ImGui::Selectable( "Size" ) ) {
         file_name_sort_order = FileDialogSortOrder::None;
         date_sort_order      = FileDialogSortOrder::None;
         type_sort_order      = FileDialogSortOrder::None;
-        size_sort_order      = ( size_sort_order == FileDialogSortOrder::Down
-                                   ? FileDialogSortOrder::Up
-                                   : FileDialogSortOrder::Down );
+        size_sort_order =
+          ( size_sort_order == FileDialogSortOrder::Down ? FileDialogSortOrder::Up
+                                                         : FileDialogSortOrder::Down );
       }
       ImGui::NextColumn();
       if( ImGui::Selectable( "Type" ) ) {
         file_name_sort_order = FileDialogSortOrder::None;
         date_sort_order      = FileDialogSortOrder::None;
         size_sort_order      = FileDialogSortOrder::None;
-        type_sort_order      = ( type_sort_order == FileDialogSortOrder::Down
-                                   ? FileDialogSortOrder::Up
-                                   : FileDialogSortOrder::Down );
+        type_sort_order =
+          ( type_sort_order == FileDialogSortOrder::Down ? FileDialogSortOrder::Up
+                                                         : FileDialogSortOrder::Down );
       }
       ImGui::NextColumn();
       if( ImGui::Selectable( "Date" ) ) {
         file_name_sort_order = FileDialogSortOrder::None;
         size_sort_order      = FileDialogSortOrder::None;
         type_sort_order      = FileDialogSortOrder::None;
-        date_sort_order      = ( date_sort_order == FileDialogSortOrder::Down
-                                   ? FileDialogSortOrder::Up
-                                   : FileDialogSortOrder::Down );
+        date_sort_order =
+          ( date_sort_order == FileDialogSortOrder::Down ? FileDialogSortOrder::Up
+                                                         : FileDialogSortOrder::Down );
       }
       ImGui::NextColumn();
       ImGui::Separator();
@@ -207,11 +199,9 @@ namespace FileDialog {
                    []( const std::filesystem::directory_entry& a,
                        const std::filesystem::directory_entry& b ) {
                      if( file_name_sort_order == FileDialogSortOrder::Down ) {
-                       return a.path().filename().string() >
-                              b.path().filename().string();
+                       return a.path().filename().string() > b.path().filename().string();
                      } else {
-                       return a.path().filename().string() <
-                              b.path().filename().string();
+                       return a.path().filename().string() < b.path().filename().string();
                      }
                    } );
       } else if( size_sort_order != FileDialogSortOrder::None ) {
@@ -229,11 +219,9 @@ namespace FileDialog {
                    []( const std::filesystem::directory_entry& a,
                        const std::filesystem::directory_entry& b ) {
                      if( type_sort_order == FileDialogSortOrder::Down ) {
-                       return a.path().extension().string() >
-                              b.path().extension().string();
+                       return a.path().extension().string() > b.path().extension().string();
                      } else {
-                       return a.path().extension().string() <
-                              b.path().extension().string();
+                       return a.path().extension().string() < b.path().extension().string();
                      }
                    } );
       } else if( date_sort_order != FileDialogSortOrder::None ) {
@@ -249,27 +237,22 @@ namespace FileDialog {
       }
 
       for( int i = 0; i < files.size(); ++i ) {
-        if( ImGui::Selectable(
-              files[ i ].path().filename().string().c_str(),
-              i == file_dialog_file_select_index,
-              ImGuiSelectableFlags_AllowDoubleClick,
-              ImVec2( ImGui::GetWindowContentRegionWidth(), 0 ) ) ) {
+        if( ImGui::Selectable( files[ i ].path().filename().string().c_str(),
+                               i == file_dialog_file_select_index,
+                               ImGuiSelectableFlags_AllowDoubleClick,
+                               ImVec2( ImGui::GetWindowContentRegionWidth(), 0 ) ) ) {
           file_dialog_file_select_index = i;
           file_dialog_current_file      = files[ i ].path().filename().string();
           file_dialog_current_folder    = "";
         }
         ImGui::NextColumn();
-        ImGui::TextUnformatted(
-          std::to_string( files[ i ].file_size() ).c_str() );
+        ImGui::TextUnformatted( std::to_string( files[ i ].file_size() ).c_str() );
         ImGui::NextColumn();
-        ImGui::TextUnformatted(
-          files[ i ].path().extension().string().c_str() );
+        ImGui::TextUnformatted( files[ i ].path().extension().string().c_str() );
         ImGui::NextColumn();
         auto ftime = files[ i ].last_write_time();
-        auto st =
-          std::chrono::time_point_cast< std::chrono::system_clock::duration >(
-            ftime - decltype( ftime )::clock::now() +
-            std::chrono::system_clock::now() );
+        auto st    = std::chrono::time_point_cast< std::chrono::system_clock::duration >(
+          ftime - decltype( ftime )::clock::now() + std::chrono::system_clock::now() );
         std::time_t tt = std::chrono::system_clock::to_time_t( st );
 
         std::tm* mt = localtime( &tt );
@@ -282,14 +265,12 @@ namespace FileDialog {
       ImGui::EndChild();
 
       std::string selected_file_path =
-        file_dialog_current_path +
-        ( file_dialog_current_path.back() == '\\' ? "" : "\\" ) +
+        file_dialog_current_path + ( file_dialog_current_path.back() == '\\' ? "" : "\\" ) +
         ( file_dialog_current_folder.size() > 0 ? file_dialog_current_folder
                                                 : file_dialog_current_file );
       char* buf = &selected_file_path[ 0 ];
       ImGui::PushItemWidth( 724 );
-      ImGui::InputText( "##text", buf, sizeof( buf ),
-                        ImGuiInputTextFlags_ReadOnly );
+      ImGui::InputText( "##text", buf, sizeof( buf ), ImGuiInputTextFlags_ReadOnly );
 
       ImGui::SetCursorPosY( ImGui::GetCursorPosY() + 6 );
 
@@ -302,8 +283,7 @@ namespace FileDialog {
       disable_delete_button             = ( file_dialog_current_folder == "" );
       if( disable_delete_button ) {
         ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
-        ImGui::PushStyleVar( ImGuiStyleVar_Alpha,
-                             ImGui::GetStyle().Alpha * 0.5f );
+        ImGui::PushStyleVar( ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f );
       }
       if( ImGui::Button( "Delete folder" ) ) {
         ImGui::OpenPopup( "DeleteFolderPopup" );
@@ -314,24 +294,20 @@ namespace FileDialog {
       }
 
       ImVec2 center( ImGui::GetWindowPos().x + ImGui::GetWindowSize().x * 0.5f,
-                     ImGui::GetWindowPos().y +
-                       ImGui::GetWindowSize().y * 0.5f );
-      ImGui::SetNextWindowPos( center, ImGuiCond_Appearing,
-                               ImVec2( 0.5f, 0.5f ) );
+                     ImGui::GetWindowPos().y + ImGui::GetWindowSize().y * 0.5f );
+      ImGui::SetNextWindowPos( center, ImGuiCond_Appearing, ImVec2( 0.5f, 0.5f ) );
       if( ImGui::BeginPopup( "NewFolderPopup", ImGuiWindowFlags_Modal ) ) {
         ImGui::Text( "Enter a name for the new folder" );
         static char new_folder_name[ 500 ]  = "";
         static char new_folder_error[ 500 ] = "";
-        ImGui::InputText( "##newfolder", new_folder_name,
-                          sizeof( new_folder_name ) );
+        ImGui::InputText( "##newfolder", new_folder_name, sizeof( new_folder_name ) );
         if( ImGui::Button( "Create##1" ) ) {
           if( strlen( new_folder_name ) <= 0 ) {
             strcpy( new_folder_error, "Folder name can't be empty" );
           } else {
-            std::string new_file_path =
-              file_dialog_current_path +
-              ( file_dialog_current_path.back() == '\\' ? "" : "\\" ) +
-              new_folder_name;
+            std::string new_file_path = file_dialog_current_path +
+                                        ( file_dialog_current_path.back() == '\\' ? "" : "\\" ) +
+                                        new_folder_name;
             std::filesystem::create_directory( new_file_path );
             ImGui::CloseCurrentPopup();
           }
@@ -342,13 +318,11 @@ namespace FileDialog {
           strcpy( new_folder_error, "" );
           ImGui::CloseCurrentPopup();
         }
-        ImGui::TextColored( ImColor( 1.0f, 0.0f, 0.2f, 1.0f ), "%s",
-                            new_folder_error );
+        ImGui::TextColored( ImColor( 1.0f, 0.0f, 0.2f, 1.0f ), "%s", new_folder_error );
         ImGui::EndPopup();
       }
 
-      ImGui::SetNextWindowPos( center, ImGuiCond_Appearing,
-                               ImVec2( 0.5f, 0.5f ) );
+      ImGui::SetNextWindowPos( center, ImGuiCond_Appearing, ImVec2( 0.5f, 0.5f ) );
       if( ImGui::BeginPopup( "DeleteFolderPopup", ImGuiWindowFlags_Modal ) ) {
         ImGui::TextColored( ImColor( 1.0f, 0.0f, 0.2f, 1.0f ),
                             "Are you sure you want to delete this folder?" );
@@ -356,10 +330,9 @@ namespace FileDialog {
         ImGui::TextUnformatted( file_dialog_current_folder.c_str() );
         ImGui::SetCursorPosY( ImGui::GetCursorPosY() + 6 );
         if( ImGui::Button( "Yes" ) ) {
-          std::filesystem::remove(
-            file_dialog_current_path +
-            ( file_dialog_current_path.back() == '\\' ? "" : "\\" ) +
-            file_dialog_current_folder );
+          std::filesystem::remove( file_dialog_current_path +
+                                   ( file_dialog_current_path.back() == '\\' ? "" : "\\" ) +
+                                   file_dialog_current_folder );
           ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();
@@ -389,10 +362,9 @@ namespace FileDialog {
           if( file_dialog_current_folder == "" ) {
             strcpy( file_dialog_error, "Error: You must select a folder!" );
           } else {
-            auto path =
-              file_dialog_current_path +
-              ( file_dialog_current_path.back() == '\\' ? "" : "\\" ) +
-              file_dialog_current_file;
+            auto path = file_dialog_current_path +
+                        ( file_dialog_current_path.back() == '\\' ? "" : "\\" ) +
+                        file_dialog_current_file;
             strcpy( buffer, path.c_str() );
             strcpy( file_dialog_error, "" );
             reset_everything();
@@ -401,10 +373,9 @@ namespace FileDialog {
           if( file_dialog_current_file == "" ) {
             strcpy( file_dialog_error, "Error: You must select a file!" );
           } else {
-            auto path =
-              file_dialog_current_path +
-              ( file_dialog_current_path.back() == '\\' ? "" : "\\" ) +
-              file_dialog_current_file;
+            auto path = file_dialog_current_path +
+                        ( file_dialog_current_path.back() == '\\' ? "" : "\\" ) +
+                        file_dialog_current_file;
             strcpy( buffer, path.c_str() );
             strcpy( file_dialog_error, "" );
             reset_everything();
@@ -413,16 +384,14 @@ namespace FileDialog {
       }
 
       if( strlen( file_dialog_error ) > 0 ) {
-        ImGui::TextColored( ImColor( 1.0f, 0.0f, 0.2f, 1.0f ), "%s",
-                            file_dialog_error );
+        ImGui::TextColored( ImColor( 1.0f, 0.0f, 0.2f, 1.0f ), "%s", file_dialog_error );
       }
 
       ImGui::End();
     }
   }
 
-  void ShowFileDialog_s( bool* open, char* buffer,
-                         FileDialogType type = FileDialogType::OpenFile )
+  void ShowFileDialog_s( bool* open, char* buffer, FileDialogType type = FileDialogType::OpenFile )
   {
     ShowFileDialog( open, buffer, 500, type );
   }

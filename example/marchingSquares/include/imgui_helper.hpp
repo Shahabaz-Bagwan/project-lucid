@@ -9,8 +9,8 @@
 #elif defined( IMGUI_IMPL_OPENGL_LOADER_GLAD2 )
 #include <glad/gl.h> // Initialize with gladLoadGL(...) or gladLoaderLoadGL()
 #elif defined( IMGUI_IMPL_OPENGL_LOADER_GLBINDING2 )
-#define GLFW_INCLUDE_NONE // GLFW including OpenGL headers causes ambiguity or
-                          // multiple definition errors.
+#define GLFW_INCLUDE_NONE      // GLFW including OpenGL headers causes ambiguity or
+                               // multiple definition errors.
 #include <glbinding/Binding.h> // Initialize with glbinding::Binding::initialize()
 #include <glbinding/gl/gl.h>
 using namespace gl;
@@ -34,8 +34,7 @@ static void glfw_error_callback( int error, const char* description )
 
 static GLFWwindow* window = NULL;
 
-void initImgui( int win_w = 1280, int win_h = 720,
-                std::string win_title = "LSystem" )
+void initImgui( int win_w = 1280, int win_h = 720, std::string win_title = "LSystem" )
 {
 
   // Setup window
@@ -48,7 +47,7 @@ void initImgui( int win_w = 1280, int win_h = 720,
   glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
   glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 2 );
   glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE ); // 3.2+ only
-  glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE ); // Required on Mac
+  glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );           // Required on Mac
 
   // Create window with graphics context
   window = glfwCreateWindow( win_w, win_h, win_title.c_str(), NULL, NULL );
@@ -65,9 +64,9 @@ void initImgui( int win_w = 1280, int win_h = 720,
 #elif defined( IMGUI_IMPL_OPENGL_LOADER_GLAD )
   bool err = gladLoadGL() == 0;
 #elif defined( IMGUI_IMPL_OPENGL_LOADER_GLAD2 )
-  bool err = gladLoadGL( glfwGetProcAddress ) ==
-             0; // glad2 recommend using the windowing library loader instead of
-                // the (optionally) bundled one.
+  bool err =
+    gladLoadGL( glfwGetProcAddress ) == 0; // glad2 recommend using the windowing library loader
+                                           // instead of the (optionally) bundled one.
 #elif defined( IMGUI_IMPL_OPENGL_LOADER_GLBINDING2 )
   bool err = false;
   glbinding::Binding::initialize();
