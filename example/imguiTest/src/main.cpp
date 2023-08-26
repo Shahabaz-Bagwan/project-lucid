@@ -1,4 +1,5 @@
 #include <L2DFileDialog.h>
+#include <nlohmann/json.hpp>
 #include <project-lucid/lib.h>
 // Dear ImGui: standalone example application for GLFW + OpenGL 3, using
 // programmable pipeline (GLFW is a cross-platform general purpose library for
@@ -82,6 +83,11 @@ int main( int, char** )
   bool show_demo_window    = false;
   bool show_another_window = false;
   ImVec4 clear_color       = ImVec4( 0.45f, 0.55f, 0.60f, 1.00f );
+
+  // Application variables
+  char inputText[ 256 ] = "";
+  std::string displayedText;
+
   // Main loop
   while( !glfwWindowShouldClose( window ) ) {
     // Poll and handle events (inputs, window resize, etc.)
@@ -116,6 +122,28 @@ int main( int, char** )
       FileDialog::ShowFileDialog( &FileDialog::file_dialog_open, file_dialog_buffer,
                                   sizeof( file_dialog_buffer ), FileDialog::file_dialog_open_type );
     }
+
+    ImGui::SetNextWindowSize( ImVec2( 740.0f, 410.0f ) );
+    // Create a text input field
+    ImGui::InputText( "Input", inputText, sizeof( inputText ) );
+
+    // Display the entered text in a separate textbox
+    if( ImGui::Button( "Display" ) ) {
+      displayedText = inputText;
+
+      // Create a JSON object
+      nlohmann::json jsonObject;
+
+      // Add the displayed text to the JSON object
+      jsonObject[ "displayed_text" ] = displayedText;
+
+      // Serialize the JSON object to a formatted string
+      displayedText = jsonObject.dump( 4 ); // Use 4 spaces for indentation
+    }
+
+    ImGui::Text( "Formatted JSON:\n%s", displayedText.c_str() );
+
+    ImGui::SetNextWindowSize( ImVec2( 740.0f, 410.0f ) );
     // 1. Show the big demo window (Most of the sample code is in
     // ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear
     // ImGui!).
