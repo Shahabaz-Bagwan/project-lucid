@@ -1,6 +1,7 @@
 #include <L2DFileDialog.h>
 #include <nlohmann/json.hpp>
 #include <project-lucid/lib.h>
+#include <string>
 // Dear ImGui: standalone example application for GLFW + OpenGL 3, using
 // programmable pipeline (GLFW is a cross-platform general purpose library for
 // handling windows, inputs, OpenGL/Vulkan/Metal graphics context creation,
@@ -28,8 +29,7 @@ int main( int, char** )
   // only glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // 3.0+ only
 
   // Create window with graphics context
-  GLFWwindow* window =
-    glfwCreateWindow( 1280, 720, "Dear ImGui GLFW+OpenGL3 example", nullptr, nullptr );
+  GLFWwindow* window = glfwCreateWindow( 1280, 720, "JsonCreationTool", nullptr, nullptr );
   if( window == nullptr )
     return 1;
   glfwMakeContextCurrent( window );
@@ -85,7 +85,31 @@ int main( int, char** )
   ImVec4 clear_color       = ImVec4( 0.45f, 0.55f, 0.60f, 1.00f );
 
   // Application variables
-  char inputText[ 256 ] = "";
+  char inputText[ 256 ]         = "";
+  char visionType[ 256 ]        = "";
+  char visionInterface[ 256 ]   = "";
+  char instances[ 256 ]         = "";
+  char dataModelPort[ 256 ]     = "";
+  char compId[ 256 ]            = "";
+  char address[ 256 ]           = "";
+  char bypasserConfig[ 256 ]    = "";
+  char clientAddress[ 256 ]     = "";
+  char serverAddress[ 256 ]     = "";
+  char parameterCompiler[ 256 ] = "";
+  char resolutionUnit[ 256 ]    = "";
+  char resolutionX[ 256 ]       = "";
+  char resolutionY[ 256 ]       = "";
+  char cameraOffsetX[ 256 ]     = "";
+  char cameraOffsetY[ 256 ]     = "";
+  char textPaddingY[ 256 ]      = "";
+  char textPaddingX[ 256 ]      = "";
+  char codePaddingY[ 256 ]      = "";
+  char codePaddingX[ 256 ]      = "";
+  char codes[ 256 ]             = "";
+  char texts[ 256 ]             = "";
+  char staticVar[ 256 ]         = "";
+  char variable[ 256 ]          = "";
+
   std::string displayedText;
 
   // Main loop
@@ -106,22 +130,67 @@ int main( int, char** )
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    static char* file_dialog_buffer = nullptr;
-    static char path[ 500 ]         = "";
+    ImGui::SetNextWindowSize( ImVec2( 740.0f, 410.0f ) );
+    // Create a text input field
+    ImGui::InputText( "VisionType", visionType, sizeof( visionType ) );
+    ImGui::InputText( "VisionInterface", visionInterface, sizeof( visionInterface ) );
+    // ImGui::InputText("Instances"
+    ImGui::InputText( "DataModelPort", dataModelPort, sizeof( dataModelPort ) );
+    // ImGui::InputText("CompId" ];
+    // ImGui::InputText("Address" ]
+    // ImGui::InputText("BypasserCon
+    // ImGui::InputText("ClientAddr
+    // ImGui::InputText("ServerAddr
+    // ImGui::InputText("ParameterC
+    // ImGui::InputText("Resolution
+    // ImGui::InputText("Resolution
+    // ImGui::InputText("Resolution
+    // ImGui::InputText("CameraOffs
+    // ImGui::InputText("CameraOffs
+    // ImGui::InputText("TextPaddin
+    // ImGui::InputText("TextPaddin
+    // ImGui::InputText("CodePaddin
+    // ImGui::InputText("CodePaddin
+    // ImGui::InputText("ParameterL
+    // ImGui::InputText("ParameterL
+    // ImGui::InputText("Static" ];
+    // ImGui::InputText("variable"
 
-    ImGui::TextUnformatted( "Path: " );
-    ImGui::InputText( "##path", path, sizeof( path ) );
-    ImGui::SameLine();
-    if( ImGui::Button( "Browse##path" ) ) {
-      file_dialog_buffer                = path;
-      FileDialog::file_dialog_open      = true;
-      FileDialog::file_dialog_open_type = FileDialog::FileDialogType::SelectFolder;
+    // Display the entered text in a separate textbox
+    if( ImGui::Button( "Display" ) ) {
+      // Create a JSON object
+      nlohmann::json jsonObject;
+
+      // Add the displayed text to the JSON object
+      // jsonObject[ "displayed_text" ] = inputText;
+
+      jsonObject[ "VisionType" ]                         = visionType;
+      jsonObject[ "VisionInterface" ]                    = visionInterface;
+      jsonObject[ "Instances" ][ "DataModel" ][ "Port" ] = dataModelPort;
+      // jsonObject[ "CompId" ];
+      // jsonObject[ "Address" ];
+      // jsonObject[ "BypasserConfig" ];
+      // jsonObject[ "ClientAddress" ];
+      // jsonObject[ "ServerAddress" ];
+      // jsonObject[ "ParameterCompiler" ];
+      // jsonObject[ "Resolution" ][ "X" ];
+      // jsonObject[ "Resolution" ][ "Y" ];
+      // jsonObject[ "Resolution" ][ "Unit" ];
+      // jsonObject[ "CameraOffset" ][ "X" ];
+      // jsonObject[ "CameraOffset" ][ "Y" ];
+      // jsonObject[ "TextPadding" ][ "X" ];
+      // jsonObject[ "TextPadding" ][ "X" ];
+      // jsonObject[ "CodePadding" ][ "Y" ];
+      // jsonObject[ "CodePadding" ][ "Y" ];
+      // jsonObject[ "ParameterList" ][ "Codes" ];
+      // jsonObject[ "ParameterList" ][ "Texts" ];
+      // jsonObject[ "Static" ];
+      // jsonObject[ "variable" ];
+      // Serialize the JSON object to a formatted string
+      displayedText = jsonObject.dump( 4 ); // Use 4 spaces for indentation
     }
 
-    if( FileDialog::file_dialog_open ) {
-      FileDialog::ShowFileDialog( &FileDialog::file_dialog_open, file_dialog_buffer,
-                                  sizeof( file_dialog_buffer ), FileDialog::file_dialog_open_type );
-    }
+    ImGui::Text( "Formatted JSON:\n%s", displayedText.c_str() );
 
     // 1. Show the big demo window (Most of the sample code is in
     // ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear

@@ -1,2 +1,3 @@
 add_subdirectory(imguiTest)
+add_subdirectory(jsonCreationTool)
 add_subdirectory(marchingSquares)
