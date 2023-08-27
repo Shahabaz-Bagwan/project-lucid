@@ -2,12 +2,6 @@
 #include <nlohmann/json.hpp>
 #include <project-lucid/lib.h>
 #include <string>
-// Dear ImGui: standalone example application for GLFW + OpenGL 3, using
-// programmable pipeline (GLFW is a cross-platform general purpose library for
-// handling windows, inputs, OpenGL/Vulkan/Metal graphics context creation,
-// etc.) If you are new to Dear ImGui, read documentation from the docs/ folder
-// + read the top of imgui.cpp. Read online:
-// https://github.com/ocornut/imgui/tree/master/docs
 
 static void glfw_error_callback( int error, const char* description )
 {
@@ -25,8 +19,6 @@ int main( int, char** )
   const char* glsl_version = "#version 130";
   glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
   glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 0 );
-  // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+
-  // only glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // 3.0+ only
 
   // Create window with graphics context
   GLFWwindow* window = glfwCreateWindow( 1280, 720, "JsonCreationTool", nullptr, nullptr );
@@ -51,78 +43,28 @@ int main( int, char** )
   ImGui_ImplGlfw_InitForOpenGL( window, true );
   ImGui_ImplOpenGL3_Init( glsl_version );
 
-  // Load Fonts
-  // - If no fonts are loaded, dear imgui will use the default font. You can
-  // also load multiple fonts and use ImGui::PushFont()/PopFont() to select
-  // them.
-  // - AddFontFromFileTTF() will return the ImFont* so you can store it if you
-  // need to select the font among multiple.
-  // - If the file cannot be loaded, the function will return a nullptr. Please
-  // handle those errors in your application (e.g. use an assertion, or display
-  // an error and quit).
-  // - The fonts will be rasterized at a given size (w/ oversampling) and stored
-  // into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which
-  // ImGui_ImplXXXX_NewFrame below will call.
-  // - Use '#define IMGUI_ENABLE_FREETYPE' in your imconfig file to use Freetype
-  // for higher quality font rendering.
-  // - Read 'docs/FONTS.md' for more instructions and details.
-  // - Remember that in C/C++ if you want to include a backslash \ in a string
-  // literal you need to write a double backslash \\ !
-  // - Our Emscripten build process allows embedding fonts to be accessible at
-  // runtime from the "fonts/" folder. See Makefile.emscripten for details.
-  // io.Fonts->AddFontDefault();
-  // io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-  // io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-  // io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-  // io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-  // ImFont* font =
-  // io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f,
-  // nullptr, io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != nullptr);
-
   // Our state
   bool show_demo_window    = false;
   bool show_another_window = false;
   ImVec4 clear_color       = ImVec4( 0.45f, 0.55f, 0.60f, 1.00f );
 
   // Application variables
-  char inputText[ 256 ]         = "";
-  char visionType[ 256 ]        = "";
-  char visionInterface[ 256 ]   = "";
-  char instances[ 256 ]         = "";
-  char dataModelPort[ 256 ]     = "";
-  char compId[ 256 ]            = "";
-  char address[ 256 ]           = "";
-  char bypasserConfig[ 256 ]    = "";
-  char clientAddress[ 256 ]     = "";
-  char serverAddress[ 256 ]     = "";
-  char parameterCompiler[ 256 ] = "";
-  char resolutionUnit[ 256 ]    = "";
-  char resolutionX[ 256 ]       = "";
-  char resolutionY[ 256 ]       = "";
-  char cameraOffsetX[ 256 ]     = "";
-  char cameraOffsetY[ 256 ]     = "";
-  char textPaddingY[ 256 ]      = "";
-  char textPaddingX[ 256 ]      = "";
-  char codePaddingY[ 256 ]      = "";
-  char codePaddingX[ 256 ]      = "";
-  char codes[ 256 ]             = "";
-  char texts[ 256 ]             = "";
-  char staticVar[ 256 ]         = "";
-  char variable[ 256 ]          = "";
+  char inputText[ 256 ] = "";
+  char fieldName[ 256 ] = "";
+  char fieldData[ 256 ] = "";
 
   std::string displayedText;
+  bool addFieldClicked = false;
+  // List of field options for the dropdown
+  std::vector< std::pair< std::string, std::string > > fieldOptions = { { "start", "" } };
+
+  int selectedFieldIndex = 0; // Index of the selected field in fieldOptions
+
+  // ImGui::SetNextWindowSize( ImVec2( 740.0f, 600.0f ) );
 
   // Main loop
   while( !glfwWindowShouldClose( window ) ) {
-    // Poll and handle events (inputs, window resize, etc.)
-    // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to
-    // tell if dear imgui wants to use your inputs.
-    // - When io.WantCaptureMouse is true, do not dispatch mouse input data to
-    // your main application, or clear/overwrite your copy of the mouse data.
-    // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input
-    // data to your main application, or clear/overwrite your copy of the
-    // keyboard data. Generally you may always pass all inputs to dear imgui,
-    // and hide them from your application based on those two flags.
+
     glfwPollEvents();
 
     // Start the Dear ImGui frame
@@ -130,116 +72,58 @@ int main( int, char** )
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::SetNextWindowSize( ImVec2( 740.0f, 410.0f ) );
-    // Create a text input field
-    ImGui::InputText( "VisionType", visionType, sizeof( visionType ) );
-    ImGui::InputText( "VisionInterface", visionInterface, sizeof( visionInterface ) );
-    // ImGui::InputText("Instances"
-    ImGui::InputText( "DataModelPort", dataModelPort, sizeof( dataModelPort ) );
-    // ImGui::InputText("CompId" ];
-    // ImGui::InputText("Address" ]
-    // ImGui::InputText("BypasserCon
-    // ImGui::InputText("ClientAddr
-    // ImGui::InputText("ServerAddr
-    // ImGui::InputText("ParameterC
-    // ImGui::InputText("Resolution
-    // ImGui::InputText("Resolution
-    // ImGui::InputText("Resolution
-    // ImGui::InputText("CameraOffs
-    // ImGui::InputText("CameraOffs
-    // ImGui::InputText("TextPaddin
-    // ImGui::InputText("TextPaddin
-    // ImGui::InputText("CodePaddin
-    // ImGui::InputText("CodePaddin
-    // ImGui::InputText("ParameterL
-    // ImGui::InputText("ParameterL
-    // ImGui::InputText("Static" ];
-    // ImGui::InputText("variable"
+    // Add text to list
+    ImGui::InputText( "Add field", fieldName, sizeof( fieldName ) );
+    ImGui::InputText( "Add field data", fieldData, sizeof( fieldData ) );
+    if( ImGui::Button( "Add" ) ) {
+      fieldOptions.push_back( std::make_pair( fieldName, fieldData ) );
+      inputText[ 0 ]  = '\0'; // Clear input field
+      addFieldClicked = true;
+    }
+    // Create a dropdown to select a field
+    const char* selectedField = fieldOptions[ selectedFieldIndex ].first.c_str();
+    if( ImGui::BeginCombo( "Select Field", selectedField ) ) {
+      for( int i = 0; i < fieldOptions.size(); ++i ) {
+        bool isSelected = ( selectedFieldIndex == i );
+        if( ImGui::Selectable( fieldOptions[ i ].first.c_str(), isSelected ) ) {
+          selectedFieldIndex = i;
+          displayedText      = ""; // Reset displayed text when field is changed
+        }
+        if( isSelected ) {
+          ImGui::SetItemDefaultFocus();
+        }
+      }
 
+      // Add the new field to the fieldOptions if it doesn't already exist
+      auto it = std::find_if( fieldOptions.begin(), fieldOptions.end(), [ & ]( auto& fname ) {
+        return fname.first == selectedField;
+      } );
+      if( it == fieldOptions.end() ) {
+        fieldOptions.push_back( std::make_pair( selectedField, "" ) );
+      }
+      ImGui::EndCombo();
+    }
+    if( ImGui::Button( "Remove" ) ) {
+
+      fieldOptions[ selectedFieldIndex ];
+    }
     // Display the entered text in a separate textbox
     if( ImGui::Button( "Display" ) ) {
       // Create a JSON object
       nlohmann::json jsonObject;
 
-      // Add the displayed text to the JSON object
-      // jsonObject[ "displayed_text" ] = inputText;
+      // if( addFieldClicked ) {
+      // Get the selected field from the dropdown
+      const std::string selectedField = fieldOptions[ selectedFieldIndex ].first;
+      jsonObject[ selectedField ]     = fieldOptions[ selectedFieldIndex ].second;
 
-      jsonObject[ "VisionType" ]                         = visionType;
-      jsonObject[ "VisionInterface" ]                    = visionInterface;
-      jsonObject[ "Instances" ][ "DataModel" ][ "Port" ] = dataModelPort;
-      // jsonObject[ "CompId" ];
-      // jsonObject[ "Address" ];
-      // jsonObject[ "BypasserConfig" ];
-      // jsonObject[ "ClientAddress" ];
-      // jsonObject[ "ServerAddress" ];
-      // jsonObject[ "ParameterCompiler" ];
-      // jsonObject[ "Resolution" ][ "X" ];
-      // jsonObject[ "Resolution" ][ "Y" ];
-      // jsonObject[ "Resolution" ][ "Unit" ];
-      // jsonObject[ "CameraOffset" ][ "X" ];
-      // jsonObject[ "CameraOffset" ][ "Y" ];
-      // jsonObject[ "TextPadding" ][ "X" ];
-      // jsonObject[ "TextPadding" ][ "X" ];
-      // jsonObject[ "CodePadding" ][ "Y" ];
-      // jsonObject[ "CodePadding" ][ "Y" ];
-      // jsonObject[ "ParameterList" ][ "Codes" ];
-      // jsonObject[ "ParameterList" ][ "Texts" ];
-      // jsonObject[ "Static" ];
-      // jsonObject[ "variable" ];
+      // addFieldClicked = false;
+      // }
       // Serialize the JSON object to a formatted string
       displayedText = jsonObject.dump( 4 ); // Use 4 spaces for indentation
     }
 
     ImGui::Text( "Formatted JSON:\n%s", displayedText.c_str() );
-
-    // 1. Show the big demo window (Most of the sample code is in
-    // ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear
-    // ImGui!).
-    if( show_demo_window )
-      ImGui::ShowDemoWindow( &show_demo_window );
-
-    // 2. Show a simple window that we create ourselves. We use a Begin/End pair
-    // to create a named window.
-    {
-      static float f     = 0.0f;
-      static int counter = 0;
-
-      ImGui::Begin( "Hello, world!" ); // Create a window called "Hello, world!"
-                                       // and append into it.
-
-      ImGui::Text( "This is some useful text." ); // Display some text (you can
-                                                  // use a format strings too)
-      ImGui::Checkbox( "Demo Window",
-                       &show_demo_window ); // Edit bools storing our window open/close state
-      ImGui::Checkbox( "Another Window", &show_another_window );
-
-      ImGui::SliderFloat( "float", &f, 0.0f,
-                          1.0f ); // Edit 1 float using a slider from 0.0f to 1.0f
-      ImGui::ColorEdit3( "clear color",
-                         (float*)&clear_color ); // Edit 3 floats representing a color
-
-      if( ImGui::Button( "Button" ) ) // Buttons return true when clicked (most widgets
-                                      // return true when edited/activated)
-        counter++;
-      ImGui::SameLine();
-      ImGui::Text( "counter = %d", counter );
-
-      ImGui::Text( "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate,
-                   io.Framerate );
-      ImGui::End();
-    }
-
-    // 3. Show another simple window.
-    if( show_another_window ) {
-      ImGui::Begin( "Another Window",
-                    &show_another_window ); // Pass a pointer to our bool variable (the
-                                            // window will have a closing button that will
-                                            // clear the bool when clicked)
-      ImGui::Text( "Hello from another window!" );
-      if( ImGui::Button( "Close Me" ) )
-        show_another_window = false;
-      ImGui::End();
-    }
 
     // Rendering
     ImGui::Render();
